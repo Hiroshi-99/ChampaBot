@@ -37,21 +37,21 @@ general:
   # Database Configuration
   database:
     # Database Type: sqlite (default), mysql, mongo
-    type: "mysql"
+    type: "sqlite"
     mongo:
       # MongoDB Connection URI
       uri: ""
     mysql:
       # MySQL Host
-      host: "potong.bloom.host"
+      host: ""
       # MySQL Port, default is 3306
       port: 3306
       # MySQL User
-      user: "u74256_ezq0t7fsde"
+      user: ""
       # MySQL Password
-      password: "Hnyy9FSXq6wQeWnKPEmWJ2Mv"
+      password: ""
       # MySQL Database Name
-      database: "s74256_champabot"
+      database: ""
   # Currency Symbol
   currency_symbol: "$"
   # Type of Channel for Server Statistics
@@ -130,14 +130,14 @@ server:
   # Setup Tutorial from Docs: https://nidzo-docs.gitbook.io/ultrabot/other/dashboard-setup
   dashboard:
     # Whether to enable Dashboard
-    enabled: true
+    enabled: false
     # Discord Bot Client ID
-    client_id: "1313741538185973833"
+    client_id: ""
     # Discord Bot Client Secret
-    client_secret: "zlpYGzNEDjTE_R-ZVaohvRVpc2pxpEaF"
+    client_secret: ""
     # Some long Secret Password, used for Backend Stuff
     # Do not share it with anyone
-    jwt: "TtCosHhqzqrLWPvktvzes"
+    jwt: ""
     # Whether to save Server & Dashboard Logs
     save_logs: false
     # List of Dashboard Modules
