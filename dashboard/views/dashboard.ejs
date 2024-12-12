@@ -1,0 +1,44 @@
+<html>
+  <%- await include("partials/head")  %> 
+  <body>
+    <div>
+      <%- await include("partials/navbar") %>
+      <div class="bg-darkblue">
+        <div class="statistics">
+          <div class="container px-0">
+            <h3 class="mt-5 text-light text-center text-md-start"><%= bot.language.dashboard.title %></h3>
+          </div>
+          <div class="container mt-4">
+            <div class="row gap-4">
+              <div class="col-12 col-md statsBox">
+                <p class="p-2 fs-4 text-center text-light"><%= bot.language.dashboard.titles.tickets %></p>
+                <p class="p-2 mb-0 fs-3 text-white text-center">
+                  <%= 
+                    await bot.database.guildData().get(`${bot.config.general.guild}.ticketCount`);
+                  %> 
+                </p>
+                <p class="text-center p-0" style="color: rgb(156 163 175);">
+                  <%= 
+                    (await bot.database.ticketsData().all()).length
+                  %> current open
+                </p>
+              </div>
+              <div class="col-12 col-md statsBox">
+                <p class="p-2 fs-4 text-center text-light"><%= bot.language.dashboard.titles.members %></p>
+                <p class="p-2 mb-0 fs-3 text-white text-center">
+                  <%= 
+                    guild.memberCount
+                  %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const sidebarBttn = document.querySelector(".home");
+    sidebarBttn.classList.add("active");
+  </script>
+</html>

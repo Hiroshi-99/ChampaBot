@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+  <%- await include("partials/head") %>
+  <body>
+    <div>
+      <%- await include("partials/navbar") %>
+      <div class="bg-darkblue">
+        <div class="plugins">
+          <% const member = guild.members.cache.get(user.id); %> 
+          <% const general = bot.config.plugins.general; %> 
+          <% const leveling = bot.config.plugins.leveling; %> 
+          <% const welcomer = bot.config.plugins.welcomer; %> 
+          <% const leave = bot.config.plugins.leave; %> 
+          <% const verification = bot.config.plugins.verification; %> 
+          <% const economy = bot.config.plugins.economy; %> 
+          <% const automod = bot.config.plugins.auto_mod; %> 
+          <% const textChannels = guild.channels.cache.filter((c) => c.type == 0); %>
+          <% const voiceChannels = guild.channels.cache.filter((c) => c.type == 2); %>
+          <% const pluginsUsers = bot.config.server.dashboard.users.plugins || []; %> 
+          <% if(bot.config.server.dashboard.modules.plugins == true && (member.id == guild.ownerId || (bot.config.roles.dashboard.plugins.length > 0 && bot.utils.hasRole(bot, guild, member, bot.config.roles.dashboard.plugins)) || pluginsUsers.includes(member.id))) { %>
+            <div class="configuration mb-5">
+              <div class="container px-0">
+                <h3 class="mt-5 text-light text-center text-md-start test"><%= bot.language.dashboard.titles.plugins %></h3>
+              </div>
+              <div class="container mt-4">
+                <div class="d-flex row statsBox py-3 px-2">
+                  <div class="pluginsSection row d-flex">
+                    <div>
+                      <h4 class="text-light text-start mt-2 mb-3"><%= bot.language.dashboard.plugins.general %></h4>
+                      <div class="col-12">
+                        <div class='py-2 px-2 rounded-1' style="overflow-x: hidden; background-color: rgba(22,33,62, 0.5);">
+                          <div class="row d-flex">
+                            <form onsubmit="changeConfig(event, 'plugins.general')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Number of Reactions needed for message to be sent in Starboard"><i class="fa-solid fa-circle-info fa-xs"></i></span> Starboard</label>
+                              <input name="starboard_count" value="<%= general.starboard %>" id="starboard" type="number" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 class="text-light text-start mt-3 mb-3"><%= bot.language.dashboard.plugins.leveling %></h4>
+                      <div class="col-12">
+                        <div class='py-2 px-2 rounded-1' style="overflow-x: hidden; background-color: rgba(22,33,62, 0.5);">
+                          <div class="row d-flex">
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Type for Rank Command (Card or Embed)"><i class="fa-solid fa-circle-info fa-xs"></i></span> Rank Style</label>
+                                <select data-minimum-results-for-search="-1" class="select2-selectmenu select2-selectmenu--cfg text-light d-block" style="width: 100%;" id="plugins.leveling.rank_style" name="rank_style" data-placeholder="Select Type">
+                                  <option value=""></option>
+                                  <option <%= leveling.rank_style == "CARD" ? "selected": "" %> class="bg-darkblue" value="CARD">Card</option>
+                                  <option <%= leveling.rank_style == "EMBED" ? "selected": "" %> class="bg-darkblue" value="EMBED">Embed</option>
+                                </select>
+                              </div>
+                            </div>
+                            <form onsubmit="changeConfig(event, 'plugins.leveling')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Cooldown for XP (in seconds)"><i class="fa-solid fa-circle-info fa-xs"></i></span> XP Cooldown</label>
+                              <input name="lvl_cooldown" value="<%= leveling.cooldown %>" id="cooldown" type="number" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <div class="col-md-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enable/Disable specific Options"><i class="fa-solid fa-circle-info fa-xs"></i></span> Togglable Options</label>
+                              <div class="form-check form-switch">
+                                <input onclick="changeConfig(event, 'plugins.leveling', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="enabled" <%= leveling.enabled == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Enabled<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether Leveling Plugin is Enabled"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                                <input onclick="changeConfig(event, 'plugins.leveling', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="message" <%= leveling.message == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">LevelUP Messages<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to send levelup Messages"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                                <input onclick="changeConfig(event, 'plugins.leveling', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="card_color_role" <%= leveling.card_color_role == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Card Color as Role Color<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to set Rank Card main color to color of highest Role User have. This will overwrite card_color_default option."><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 class="text-light text-start mt-3 mb-3"><%= bot.language.dashboard.plugins.welcomer %></h4>
+                      <div class="col-12">
+                        <div class='py-2 px-2 rounded-1' style="overflow-x: hidden; background-color: rgba(22,33,62, 0.5);">
+                          <div class="row d-flex">
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Type for Welcomer Message"><i class="fa-solid fa-circle-info fa-xs"></i></span> Message Type</label>
+                                <select class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" style="width: 100%;" id="plugins.welcomer.type" name="welcomer_type" data-placeholder="Select Type">
+                                  <option value=""></option>
+                                  <option <%= welcomer.type == "EMBED" ? "selected": "" %> class="bg-darkblue" value="EMBED">Embed</option>
+                                  <option <%= welcomer.type == "TEXT" ? "selected": "" %> class="bg-darkblue" value="TEXT">Text</option>
+                                  <option <%= welcomer.type == "CARD" ? "selected": "" %> class="bg-darkblue" value="CARD">Card</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Alignment of Welcome Card"><i class="fa-solid fa-circle-info fa-xs"></i></span> Card Style</label>
+                                <select data-minimum-results-for-search="-1" class="select2-selectmenu select2-selectmenu--cfg text-light d-block" style="width: 100%;" id="plugins.welcomer.card.style" name="card_style" data-placeholder="Select Style">
+                                  <option value=""></option>
+                                  <option <%= welcomer.card.style == "LEFT" ? "selected": "" %> class="bg-darkblue" value="LEFT">Left</option>
+                                  <option <%= welcomer.card.style == "CENTER" ? "selected": "" %> class="bg-darkblue" value="CENTER">Center</option>
+                                </select>
+                              </div>
+                            </div>
+                            <form onsubmit="changeConfig(event, 'plugins.welcomer.card')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Color of Text"><i class="fa-solid fa-circle-info fa-xs"></i></span> Card Text Color</label>
+                              <input name="wlcm_color" value="<%= welcomer.card.color %>" id="color" type="text" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <form onsubmit="changeConfig(event, 'plugins.welcomer.card')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Color of Title Text"><i class="fa-solid fa-circle-info fa-xs"></i></span> Card Title Color</label>
+                              <input name="wlcm_color_title" value="<%= welcomer.card.color_title %>" id="color_title" type="text" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <form onsubmit="changeConfig(event, 'plugins.welcomer.card')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Color of Avatar Circle"><i class="fa-solid fa-circle-info fa-xs"></i></span> Card Avatar Circle Color</label>
+                              <input name="wlcm_avatar_circle" value="<%= welcomer.card.avatar_circle %>" id="avatar_circle" type="text" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <form onsubmit="changeConfig(event, 'plugins.welcomer')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Message sent when someone joins Server (requires type TEXT). Valid Placeholders are <user>, <members>, <invitedBy>, <createdAt>"><i class="fa-solid fa-circle-info fa-xs"></i></span> Message</label>
+                              <input name="wlcm_message" value="<%= welcomer.message %>" id="message" type="text" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <div class="col-md-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enable/Disable specific Options"><i class="fa-solid fa-circle-info fa-xs"></i></span> Togglable Options</label>
+                              <div class="form-check form-switch">
+                                <input onclick="changeConfig(event, 'plugins.welcomer', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="enabled" <%= welcomer.enabled == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Enabled<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether Welcomer Plugin is Enabled"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                                <input onclick="changeConfig(event, 'plugins.welcomer', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="save_roles" <%= welcomer.save_roles == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Save Roles<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to save roles when member leave and give them back when they rejoin."><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 class="text-light text-start mt-3 mb-3"><%= bot.language.dashboard.plugins.leave %></h4>
+                      <div class="col-12">
+                        <div class='py-2 px-2 rounded-1' style="overflow-x: hidden; background-color: rgba(22,33,62, 0.5);">
+                          <div class="row d-flex">
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Type for Leave Message"><i class="fa-solid fa-circle-info fa-xs"></i></span> Message Type</label>
+                                <select class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" style="width: 100%;" id="plugins.leave.type" name="leave_type" data-placeholder="Select Type">
+                                  <option value=""></option>
+                                  <option <%= leave.type == "EMBED" ? "selected": "" %> class="bg-darkblue" value="EMBED">Embed</option>
+                                  <option <%= leave.type == "TEXT" ? "selected": "" %> class="bg-darkblue" value="TEXT">Text</option>
+                                  <option <%= leave.type == "CARD" ? "selected": "" %> class="bg-darkblue" value="CARD">Card</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Alignment of Leave Card"><i class="fa-solid fa-circle-info fa-xs"></i></span> Card Style</label>
+                                <select class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" style="width: 100%;" id="plugins.leave.card.style" name="card_style" data-placeholder="Select Style">
+                                  <option value=""></option>
+                                  <option <%= leave.card.style == "LEFT" ? "selected": "" %> class="bg-darkblue" value="LEFT">Left</option>
+                                  <option <%= leave.card.style == "CENTER" ? "selected": "" %> class="bg-darkblue" value="CENTER">Center</option>
+                                </select>
+                              </div>
+                            </div>
+                            <form onsubmit="changeConfig(event, 'plugins.leave.card')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Color of Text"><i class="fa-solid fa-circle-info fa-xs"></i></span> Card Text Color</label>
+                              <input name="wlcm_color" value="<%= leave.card.color %>" id="color" type="text" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <form onsubmit="changeConfig(event, 'plugins.leave.card')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Color of Title Text"><i class="fa-solid fa-circle-info fa-xs"></i></span> Card Title Color</label>
+                              <input name="wlcm_color_title" value="<%= leave.card.color_title %>" id="color_title" type="text" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <form onsubmit="changeConfig(event, 'plugins.leave.card')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Color of Avatar Circle"><i class="fa-solid fa-circle-info fa-xs"></i></span> Card Avatar Circle Color</label>
+                              <input name="wlcm_avatar_circle" value="<%= leave.card.avatar_circle %>" id="avatar_circle" type="text" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <form onsubmit="changeConfig(event, 'plugins.leave')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Message sent when someone joins Server (requires type TEXT). Valid Placeholders are <user>, <members>, <invitedBy>, <createdAt>"><i class="fa-solid fa-circle-info fa-xs"></i></span> Message</label>
+                              <input name="wlcm_message" value="<%= leave.message %>" id="message" type="text" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <div class="col-md-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enable/Disable specific Options"><i class="fa-solid fa-circle-info fa-xs"></i></span> Togglable Options</label>
+                              <div class="form-check form-switch">
+                                <input onclick="changeConfig(event, 'plugins.leave', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="enabled" <%= leave.enabled == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Enabled<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether Leave Plugin is Enabled"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 class="text-light text-start mt-3 mb-3"><%= bot.language.dashboard.plugins.verification %></h4>
+                      <div class="col-12">
+                        <div class='py-2 px-2 rounded-1' style="overflow-x: hidden; background-color: rgba(22,33,62, 0.5);">
+                          <div class="row d-flex">
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Type for Captcha."><i class="fa-solid fa-circle-info fa-xs"></i></span> Captcha Type</label>
+                                <select class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" style="width: 100%;" id="plugins.verification.type" name="verify_type" data-placeholder="Select Type">
+                                  <option value=""></option>
+                                  <option <%= verification.type == "EMBED" ? "selected": "" %> class="bg-darkblue" value="EMBED">Embed</option>
+                                  <option <%= verification.type == "IMAGE" ? "selected": "" %> class="bg-darkblue" value="IMAGE">Image</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-flex flex-column mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Role to give upon Verification"><i class="fa-solid fa-circle-info fa-xs"></i></span> Add Role</label>
+                              <select class="select2-selectmenu select2-selectmenu--cfg text-light d-block" id="plugins.verification.role_add" style="width: 100%;" name="verify_add" data-placeholder="Select Role">
+                                <option value=""></option>
+                                <option value="reset">Clear Role</option>
+                                <% for(const role of guild.roles.cache) { %>
+                                  <option <%= bot.config.plugins.verification.role_add == role[0] ? "selected" : "" %>  value="<%= role[0] %>"><%= role[1].name %> </option>
+                                <% } %>
+                              </select>
+                            </div>
+                            <div class="col-md-3 d-flex flex-column mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Role to remove upon Verification"><i class="fa-solid fa-circle-info fa-xs"></i></span> Remove Role</label>
+                              <select class="select2-selectmenu select2-selectmenu--cfg text-light d-block" id="plugins.verification.role_remove" style="width: 100%;" name="verify_remove" data-placeholder="Select Role">
+                                <option value=""></option>
+                                <option value="reset">Clear Role</option>
+                                <% for(const role of guild.roles.cache) { %>
+                                  <option <%= bot.config.plugins.verification.role_add == role[0] ? "selected" : "" %>  value="<%= role[0] %>"><%= role[1].name %> </option>
+                                <% } %>
+                              </select>
+                            </div>
+                            <form onsubmit="changeConfig(event, 'plugins.verification')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="How much time Member have to verify (in seconds)"><i class="fa-solid fa-circle-info fa-xs"></i></span> Vetification Time</label>
+                              <input name="verify_time" value="<%= verification.time %>" id="time" type="number" min="5" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <div class="col-md-4 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Channel in which to allow verify Command (If fails DM Verification)"><i class="fa-solid fa-circle-info fa-xs"></i></span> Verify Channel </label>
+                                <select class="select2-selectmenu select2-selectmenu--cfg text-light d-block" id="plugins.verification.channel" style="width: 100%;" name="verify_ch" data-placeholder="Select Channel">
+                                  <option value=""></option>
+                                  <option value="reset">Clear Channel</option>
+                                  <% for(const ch of textChannels) { %>
+                                    <option <%= verification.channel == ch[0] ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                                  <% } %>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enable/Disable specific Options"><i class="fa-solid fa-circle-info fa-xs"></i></span> Togglable Options</label>
+                              <div class="form-check form-switch">
+                                <input onclick="changeConfig(event, 'plugins.verification', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="enabled" <%= verification.enabled == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Enabled<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether Verification Plugin is Enabled"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 class="text-light text-start mt-3 mb-3"><%= bot.language.dashboard.plugins.economy %></h4>
+                      <div class="col-12">
+                        <div class='py-2 px-2 rounded-1' style="overflow-x: hidden; background-color: rgba(22,33,62, 0.5);">
+                          <div class="row d-flex">
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Type for Work Command. With NORMAL, it will work random job, with APPLY, they'll need to apply for it."><i class="fa-solid fa-circle-info fa-xs"></i></span> Work Type</label>
+                                <select class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" style="width: 100%;" id="plugins.economy.work_type" name="eco_work_type" data-placeholder="Select Type">
+                                  <option value=""></option>
+                                  <option <%= economy.work_type == "NORMAL" ? "selected": "" %> class="bg-darkblue" value="NORMAL">Normal</option>
+                                  <option <%= economy.work_type == "APPLY" ? "selected": "" %> class="bg-darkblue" value="APPLY">Apply</option>
+                                </select>
+                              </div>
+                            </div>
+                            <form onsubmit="changeConfig(event, 'plugins.economy')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Cooldown for Job Apply (in seconds), if work_type: 'APPLY'"><i class="fa-solid fa-circle-info fa-xs"></i></span> Apply Cooldown</label>
+                              <input name="eco_apply_cooldown" value="<%= economy.apply_cooldown %>" id="apply_cooldown" type="number" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <form onsubmit="changeConfig(event, 'plugins.economy.bet')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Cooldown for Bet (in seconds)"><i class="fa-solid fa-circle-info fa-xs"></i></span> Bet Cooldown</label>
+                              <input name="eco_bet_cooldown" value="<%= economy.bet.cooldown %>" id="cooldown" type="number" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <form onsubmit="changeConfig(event, 'plugins.economy')" class="col-md-3 mb-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Minumum amount both user who's robbing and who's getting robbed need to have in wallet."><i class="fa-solid fa-circle-info fa-xs"></i></span> Rob Min. Amount</label>
+                              <input name="eco_min_rob" value="<%= economy.min_rob %>" id="min_rob" type="number" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                            </form>
+                            <% if(economy.daily.random == true) { %>
+                              <form onsubmit="changeConfig(event, 'plugins.economy.daily')" class="col-md-3 mb-3">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Minimum amount of money to give in Daily"><i class="fa-solid fa-circle-info fa-xs"></i></span> Min. Daily</label>
+                                <input name="eco_min" value="<%= economy.daily.min %>" id="min" type="number" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                              </form>
+                              <form onsubmit="changeConfig(event, 'plugins.economy.daily')" class="col-md-3 mb-3">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Maximum amount of money to give in Daily"><i class="fa-solid fa-circle-info fa-xs"></i></span> Max. Daily</label>
+                                <input name="eco_max" value="<%= economy.daily.max %>" id="max" type="number" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                              </form>
+                            <% } else { %>
+                              <form onsubmit="changeConfig(event, 'plugins.economy.daily')" class="col-md-3 mb-3">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Amount of money to give in Daily"><i class="fa-solid fa-circle-info fa-xs"></i></span> Daily Amount</label>
+                                <input name="eco_amount" value="<%= economy.daily.amount %>" id="amount" type="number" min="0" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                              </form>
+                            <% } %>
+                            <div class="col-md-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enable/Disable specific Options"><i class="fa-solid fa-circle-info fa-xs"></i></span> Togglable Options</label>
+                              <div class="form-check form-switch">
+                                <input onclick="changeConfig(event, 'plugins.economy', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="enabled" <%= economy.enabled == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Enabled<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether Economy Plugin is Enabled"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                                <input onclick="changeConfig(event, 'plugins.economy', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="apply_chance" <%= economy.apply_chance == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Apply Chance<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to members not get accepted for job on first apply, but to sometimes need to apply multiple times."><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                                <input onclick="changeConfig(event, 'plugins.economy.daily', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="random" <%= economy.daily.random == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Random Daily Amount<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to Daily Command give random amount of money."><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                                <input onclick="changeConfig(event, 'plugins.economy.shop', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="enabled" <%= economy.shop.enabled == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Shop<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to enable Shop"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 class="text-light text-start mt-3 mb-3"><%= bot.language.dashboard.plugins.automod %></h4>
+                      <div class="col-12">
+                        <div class='py-2 px-2 rounded-1' style="overflow-x: hidden; background-color: rgba(22,33,62, 0.5);">
+                          <div class="row d-flex">
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="List of AutoMod Modules enabled."><i class="fa-solid fa-circle-info fa-xs"></i></span> Modules</label>
+                                <select class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" style="width: 100%;" id="plugins.auto_mod.modules" name="automod_modules" data-placeholder="Select Type" multiple>
+                                  <option value=""></option>
+                                  <option <%= automod.modules.includes("CAPS_LOCK") ? "selected": "" %> class="bg-darkblue" value="CAPS_LOCK">Caps Lock</option>
+                                  <option <%= automod.modules.includes("BAD_WORDS") ? "selected": "" %> class="bg-darkblue" value="BAD_WORDS">Bad Words</option>
+                                  <option <%= automod.modules.includes("ANTI_LINK") ? "selected": "" %> class="bg-darkblue" value="ANTI_LINK">Anti Link</option>
+                                  <option <%= automod.modules.includes("ANTI_INVITE") ? "selected": "" %> class="bg-darkblue" value="ANTI_INVITE">Anti Invite</option>
+                                  <option <%= automod.modules.includes("ANTI_SPAM") ? "selected": "" %> class="bg-darkblue" value="ANTI_SPAM">Anti Spam</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="List of bad words."><i class="fa-solid fa-circle-info fa-xs"></i></span> Bad Words</label>
+                                <select data-tags="true" class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" style="width: 100%;" id="plugins.auto_mod.bad_words" name="automod_bad_words" data-placeholder="Add/Remove Bad Words" multiple>
+                                  <option value=""></option>
+                                  <% for(const bad of automod.bad_words) { %>
+                                    <option value="<%= bad %>" selected><%= bad %></option>
+                                  <% } %>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                              <div class="container px-0 d-flex flex-column">
+                                <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Links which will not trigger AutoMod."><i class="fa-solid fa-circle-info fa-xs"></i></span> Links Whitelist</label>
+                                <select class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" style="width: 100%;" id="plugins.auto_mod.links_wl" name="plugins.auto_mod_links_wl" data-placeholder="Add/Remove Link from Whitelist" multiple>
+                                  <option value=""></option>
+                                  <% for(const link of automod.links_wl) { %>
+                                    <option value="<%= link %>" selected><%= link %></option>
+                                  <% } %>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enable/Disable specific Options"><i class="fa-solid fa-circle-info fa-xs"></i></span> Togglable Options</label>
+                              <div class="form-check form-switch">
+                                <input onclick="changeConfig(event, 'plugins.auto_mod', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="enabled" <%= automod.enabled == true ? "checked" : "" %> >
+                                <label class="form-check-label text-light d-flex">Enabled<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether AutoMod Plugin is Enabled"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                              </div>
+                            </div>
+                            <% 
+                              const modOptions = {
+                                caps: "AntiCaps",
+                                invites: "AntiInvites",
+                                links: "AntiLinks",
+                                bad_words: "BadWords",
+                                spam: "AntiSpam",
+                              } 
+                            %> 
+                            <% for(const mod of Object.keys(automod.channels)) { %>
+                              <div class="col-md-4 mb-3">
+                                <div class="container px-0 d-flex flex-column">
+                                  <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Channels in which <%= modOptions[mod] %> AutoModeration is disabled"><i class="fa-solid fa-circle-info fa-xs"></i></span> <%= modOptions[mod]  %>  Bypass Channels </label>
+                                  <select class="select2-selectmenu select2-selectmenu--multi-cfg text-light d-block" id="plugins.auto_mod.channels.<%= mod %>" style="width: 100%;" name="<%= mod %>_ch" data-placeholder="Select Channel" multiple>
+                                    <option value=""></option>
+                                    <% for(const ch of textChannels) { %>
+                                      <option <%= automod.channels[mod].includes(ch[0]) ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                                    <% } %>
+                                  </select>
+                                </div>
+                              </div>
+                            <% } %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>  
+                </div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const sidebarBttn = document.querySelector(".plugins");
+    sidebarBttn.classList.add("active");
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+     $(".configInput").blur(function() {
+      $(this).submit();
+    });
+
+    $(document).ready(function() {
+      $(".select2-selectmenu").select2({
+        width: "resolve"
+      });
+      $(".select2-selectmenu--multi-cfg").select2({
+        minimumResultsForSearch: -1,
+        tags: true
+      });
+      $(".select2-selectmenu--tags").select2({
+        tags: true,
+      })
+    });
+
+    $(".select2-selectmenu--multi-cfg").on("select2:select", async(e) => {
+      const selOption = $(e.target).val();
+
+      changeConfig(e, "", selOption, false);
+    });
+
+    /* SELECT2 UNSELECT */
+
+    $(".select2-selectmenu--multi-cfg").on("select2:unselect", async(e) => {
+      const selOption = $(e.target).val();
+
+      changeConfig(e, "", selOption, false);
+    });
+
+    /* SELECT2 CONFIG */
+
+    $(".select2-selectmenu--cfg").on("select2:select", async(e) => {
+      let value = "";
+      const selOption = $(e.target).select2('data')[0];
+      const option = e.target.id;
+      const channelId = selOption.id;
+
+      if(channelId != "reset") value = selOption.id;
+
+      changeConfig(e, "", value, false);
+    });
+
+    /* SAVE CONFIG */
+
+    const changeConfig = (e, section, value, boolean = false) => {
+      if(e.target.value && e.target.value?.length > 0 && !value) 
+        value = e.target.value;
+      if(value == "reset") value = "";
+
+      $.ajax({
+        url: "/settings/config/" + e.target.id,
+        type: "PATCH",
+        dataType: "json",
+        data: {
+          configData: JSON.stringify({
+            section,
+            boolean,
+            "value": boolean == true ? null : value,
+          })
+        },
+        success: ((resp) => {
+          if(resp?.code == 200) {
+            if(boolean == true)
+              toastr.success(`Config option '${e.target.id}' have been ${e.target.checked == true ? "enabled" : "disabled"}.`);
+            else {
+              if(!value || value == "reset") {
+                toastr.success(`Config option '${e.target.id}' have been reseted.`);
+              } else if($(e.target).hasClass("select2-selectmenu")) {
+                const selectData = $(e.target).select2('data')[0];
+                toastr.success(`Config option '${e.target.id}' have been edited.`);
+              } else {
+                toastr.success(`Config option '${e.target.id}' have been changed to '${value}'.`);
+              }
+            }
+          }
+        }),
+        error: (() => {})
+      })
+    }
+
+    /* TOGGLE COMMAND */
+
+    const toggleCommand = (e) => {
+      $.ajax({
+        url: "/settings/commands/" + e.target.id,
+        type: "PATCH",
+        dataType: "json",
+        success: ((resp) => {
+          if(resp?.code == 200) {
+            toastr.success(`Command '${e.target.id}' have been ${e.target.checked == true ? "enabled" : "disabled"}.`);
+          }
+        }),
+        error: (() => {})
+      })
+    }
+  </script>
+</html>

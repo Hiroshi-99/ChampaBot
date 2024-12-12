@@ -1,0 +1,38 @@
+{
+  "name": "champa-network",
+  "version": "1.2.9",
+  "description": "Premium Multi-Purpose Discord Bot with a huge amount of Features and many Customisation Options.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@discord-player/extractor": "^4.4.6",
+    "better-sqlite3": "latest",
+    "canvas": "latest",
+    "captcha-canvas": "^3.0.0",
+    "discord-player-youtubei": "^1.2.1-alpha.1",
+    "chalk": "^4.1.2",
+    "cookie-parser": "latest",
+    "cron": "^2.1.0",
+    "discord-player": "latest",
+    "discord.js": "^14.15.2",
+    "ejs": "latest",
+    "enmap": "^5.3.1",
+    "express": "latest",
+    "form-data": "latest",
+    "hastebin-gen": "^2.0.5",
+    "jsonwebtoken": "latest",
+    "mathjs": "latest",
+    "mongoose": "^7.2.2",
+    "ms": "^2.1.2",
+    "mysql2": "latest",
+    "mediaplex": "^0.0.9",
+    "quick.db": "^9.0.5",
+    "yaml": "latest"
+  },
+  "engines": {
+    "node": ">=20.13.0"
+  }
+}

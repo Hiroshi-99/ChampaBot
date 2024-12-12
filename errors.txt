@@ -1,0 +1,7 @@
+[12/4/2024, 6:01:42 AM] [ERROR] FetchError: invalid json response body at https://www.reddit.com/user/emdix/m/dankmemes/top/.json?sort=top&t=day&limit=300 reason: Unexpected token '<', "<body clas"... is not valid JSON
+    at /home/container/node_modules/node-fetch/lib/index.js:273:32
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/container/commands/fun/dankmeme.js:20:137
+    at async DankMeme.run (/home/container/commands/fun/dankmeme.js:20:22)
+[12/5/2024, 12:00:10 AM] [ERROR] Announce Birthdays options is enabled but Birthdays Channel is not setuped.
+[12/6/2024, 12:00:10 AM] [ERROR] Announce Birthdays options is enabled but Birthdays Channel is not setuped.

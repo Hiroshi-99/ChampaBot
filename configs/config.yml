@@ -1,0 +1,759 @@
+# ________________________________________________
+#
+#         Champa Network CONFIGURATION FILE
+#
+# Here you can customise Bot's embeds, messages,
+# channels etc.
+#
+# ________________________________________________
+
+version: "1.2.9"
+
+# ____________________________
+#
+# GENERAL OPTIONS
+# ____________________________
+
+general:
+  # Name of the Bot
+  name: "Champa Network"
+  # Bot's Prefix
+  prefix: "champa"
+  # Bot Token obtained from Discord Developer Portal
+  token: "MTMxMzc0MTUzODE4NTk3MzgzMw.GD2fRL.zY-WxuWwPX8R8aPZ1Xj92YDcpM-23J5SZdPbjQ"
+  # ID of Guild in which Bot will be used
+  # Used for Custom Status Stats and similar
+  guild: "1311227940570398780"
+  # ID of User who is gonna have access to EVAL Command
+  # Example:
+  #
+  # eval:
+  #   - "1234"
+  #
+  # If you don't want any, just change to eval: []
+  eval: []
+  # Whether to Register Slash Commands
+  slash: true
+  # Database Configuration
+  database:
+    # Database Type: sqlite (default), mysql, mongo
+    type: "mysql"
+    mongo:
+      # MongoDB Connection URI
+      uri: ""
+    mysql:
+      # MySQL Host
+      host: "potong.bloom.host"
+      # MySQL Port, default is 3306
+      port: 3306
+      # MySQL User
+      user: "u74256_ezq0t7fsde"
+      # MySQL Password
+      password: "Hnyy9FSXq6wQeWnKPEmWJ2Mv"
+      # MySQL Database Name
+      database: "s74256_champabot"
+  # Currency Symbol
+  currency_symbol: "$"
+  # Type of Channel for Server Statistics
+  # Can be: GUILD_TEXT, GUILD_VOICE
+  stats_type: "GUILD_VOICE"
+  # Help Categories
+  help:
+    list:
+      # Title for Select Menu Option
+      - name: "Main Menu"
+        # Emoji for Select Menu
+        emoji: "❓"
+        # Help Category, do not change.
+        category: "main_menu"
+      - name: "Member"
+        emoji: "👨"
+        category: "member"
+      - name: "Economy"
+        emoji: "💵"
+        category: "economy"
+      - name: "Utility"
+        emoji: "🔧"
+        category: "utility"
+      - name: "Moderation"
+        emoji: "🔨"
+        category: "moderation"
+      - name: "Music"
+        emoji: "🎵"
+        category: "music"
+      - name: "Fun"
+        emoji: "⚽"
+        category: "fun"
+      - name: "Giveaway"
+        emoji: "🎁"
+        category: "giveaway"
+      - name: "Administration"
+        emoji: "🛡"
+        category: "administration"
+  # Remove Command Message after Sent
+  remove_command: false
+  # Is Suggestion Decision (Accept, Deny, Delete) Option Enabled
+  sugg_decision: false
+  # IP of your Minecraft Server, used for Counters
+  minecraft_ip: "champa.lol"
+  # Whether to DM Users when they get punished
+  dm_punishment: false
+
+# ____________________________
+#
+# ADDONS CONFIGURATION
+# ____________________________
+
+addons:
+  # Folder Name of Addon to Disable
+  disabled: ["example"]
+
+# ____________________________
+#
+# SERVER CONFIGURATION
+# ____________________________
+
+server:
+  # Whether Server is enabled
+  enabled: true
+  # URL on which server will be.
+  # If you're using IP (like in first example) you need to add
+  # port you specified to the end of url in format: ':PORT'
+  # Example: http://123.45.675.104:7071, http://test.com, http://test.com:7071
+  url: "http://66.118.234.24:4567"
+  # Port for Server
+  port: 4567
+  # Dashboard Configuration
+  # To configure who will be able to login into dashboard, visit
+  # 'roles' section down below
+  # Everyone with 'Administrator' Permission have access to dashboard!
+  # Setup Tutorial from Docs: https://nidzo-docs.gitbook.io/ultrabot/other/dashboard-setup
+  dashboard:
+    # Whether to enable Dashboard
+    enabled: true
+    # Discord Bot Client ID
+    client_id: "1313741538185973833"
+    # Discord Bot Client Secret
+    client_secret: "zlpYGzNEDjTE_R-ZVaohvRVpc2pxpEaF"
+    # Some long Secret Password, used for Backend Stuff
+    # Do not share it with anyone
+    jwt: "TtCosHhqzqrLWPvktvzes"
+    # Whether to save Server & Dashboard Logs
+    save_logs: false
+    # List of Dashboard Modules
+    modules:
+      settings:
+        # Settings Page
+        enabled: true
+        # Config editing section
+        config: true
+        # Commands toggling section
+        commands: true
+      plugins: true
+      logs: true
+      profile: true
+    # Configuration for User Dashboard Access
+    users:
+      # IDs of User's who will have access to Dashboard
+      access: ["1312970141230694555", "459154624230719489", "1058049067122434108"]
+      # IDs of User's who will have access to Config Dashboard Section
+      config: ["1312970141230694555"]
+      # IDs of User's who will have access to Commands Dashboard Section
+      commands: ["1312970141230694555"]
+      # IDs of User's who will have access to Plugins Dashboard Section
+      plugins: ["1312970141230694555"]
+
+# ____________________________
+#
+# PLUGINS CONFIGURATION
+# ____________________________
+
+plugins:
+  general:
+    # Number of Stars required for Starboard
+    starboard: 1
+  leveling:
+    enabled: true
+    # Whether to send levelup Messages
+    message: true
+    # Cooldown for XP (in seconds)
+    cooldown: 35
+    # Style of 'Rank' Command, can be CARD or EMBED
+    rank_style: "CARD"
+    # Whether to set Rank Card main color to
+    # color of highest Role User have
+    # This will overwrite card_color_default option
+    card_color_role: false
+    # Main color of Rank Card, requires rank_style: "CARD" and card_color_role: false
+    card_color_default: "#4CAAFF"
+  logging:
+    enabled: true
+    # List of Events to Log
+    # To Log all Events use: ALL
+    # Valid Moderation Events: BAN, TEMPBAN, MUTE, UNBAN, UNMUTE, WARN, UNWARN, KICK
+    # Valid Discord Events: CHANNEL_CREATE, CHANNEL_DELETE, GUILD_MEMBER_UPDATE, GUILD_UPDATE, ROLE_CREATE,
+    # ROLE_DELETE, ROLE_UPDATE, MESSAGE_DELETE, MESSAGE_UPDATE
+    events: []
+    # Whether to show Thumbnail Image with User's avatar in Logging Embed
+    thumbnail: true
+    # Channels in which to Log different Events
+    # If it's not set, then it will log in 'channels > logging > bot/events'
+    channels:
+      BAN: ""
+      TEMPBAN: ""
+      MUTE: ""
+      UNBAN: ""
+      UNMUTE: ""
+      WARN: ""
+      UNWARN: ""
+      KICK: ""
+      CHANNEL_CREATE: ""
+      CHANNEL_DELETE: ""
+      GUILD_MEMBER_UPDATE: ""
+      GUILD_UPDATE: ""
+      ROLE_CREATE: ""
+      ROLE_DELETE: ""
+      ROLE_UPDATE: ""
+      MESSAGE_DELETE: ""
+      MESSAGE_UPDATE: ""
+  welcomer:
+    enabled: false
+    # Whether Welcome Message is Enabled
+    send_message: true
+    # Type can be: EMBED, TEXT or CARD
+    type: "EMBED"
+    # Only if Type is Text
+    # Valid Placeholders are <user>, <members>, <invitedBy>, <createdAt>
+    message: ""
+    image_url: ""
+    # Whether to save Member's Role when they leave
+    # and to give them upon joining again
+    save_roles: false
+    # Configuration about Welcome Card
+    # Requires type: "CARD"
+    card:
+      # Name of the Welcome Image File (with extension) from 'data' folder
+      file: "welcome.jpg"
+      # Color of Text
+      color: "#f0EDED"
+      # Color of Title Text
+      color_title: "#f0EDED"
+      # Style for Card, can be LEFT or CENTER
+      style: "CENTER"
+      # Color for Avatar Circle
+      avatar_circle: "#FFF"
+      # Welcome Card Lines (you can't add more)
+      lines:
+        # Title Line on Welcome Card
+        title: "Welcome"
+        # First Line on Welcome Card
+        # Available Placeholders: <username>, <tag>, <memberCount>
+        first_line: "Hey <username>, welcome."
+        # Second Line on Welcome Card
+        # Available Placeholders: <username>, <tag>, <memberCount>
+        second_line: "You're our #<memberCount> member, we hope you'll enjoy."
+        # Third Line on Welcome Card
+        # Available Placeholders: <username>, <tag>, <memberCount>
+        third_line: ""
+  leave:
+    enabled: false
+    # Whether Leave Message is Enabled
+    send_message: true
+    # Type can be: EMBED, TEXT or CARD
+    type: "EMBED"
+    # Only if Type is Text
+    # Valid Placeholders are <user>, <members>, <inviter>, <createdAt>
+    message: ""
+    # Configuration about Leave Card
+    # Requires type: "CARD"
+    card:
+      # Name of the Leave Image File (with extension) from 'data' folder
+      file: "leave.jpg"
+      # Color of Text
+      color: "#f0EDED"
+      # Color of Title Text
+      color_title: "#f0EDED"
+      # Style for Card, can be LEFT or CENTER
+      style: "CENTER"
+      # Color for Avatar Circle
+      avatar_circle: "#FFF"
+      # Leave Card Lines (you can't add more)
+      lines:
+        # Title Line on Leave Card
+        title: "Member Left"
+        # First Line on Leave Card
+        # Available Placeholders: <username>, <tag>, <memberCount>
+        first_line: "<username> left, bye!"
+        # Second Line on Leave Card
+        # Available Placeholders: <username>, <tag>, <memberCount>
+        second_line: "We now have #<memberCount> members."
+        # Third Line on Leave Card
+        # Available Placeholders: <username>, <tag>, <memberCount>
+        third_line: ""
+  verification:
+    enabled: false
+    # Type for Captcha, can be EMBED or IMAGE
+    type: "IMAGE"
+    # Role to give upon Verification
+    role_add: ""
+    # Role to remove upon Verification
+    role_remove: ""
+    # How much time Member have to verify (in seconds)
+    time: 60
+    # Channel in which to allow +verify Command (If fails DM Verification)
+    channel: ""
+  fun:
+    eightball:
+      answers: ["Yes", "Maybe", "Later", "Perhaps", "No", "Never", "Good", "Bad", "Nah"]
+  stats:
+    # Count Messages
+    messages: true
+    leaderboard:
+      # Leaderboard Format, valid Placeholders <rank>, <user>, <prefix>, <data> (amount)
+      format: "**#<rank>** <user> - <data><symbol>"
+      # Symbol for Leaderboard
+      symbol:
+        level: " level"
+        invites: " invites"
+        messages: " messages"
+  economy:
+    enabled: true
+    # Type for Work Command, can be NORMAL or APPLY
+    # With NORMAL, it will work random job, with APPLY, they'll need to apply for
+    # job they want to do.
+    work_type: "NORMAL"
+    messages:
+      # Amount of money to give per message, set to 0 to disable
+      money_per_message: 0
+      # Cooldown for money per message (in seconds)
+      cooldown: 0
+    # Cooldown for Job Apply (in seconds), if work_type: "APPLY"
+    apply_cooldown: 120
+    # Whether to members not get accepted for job
+    # on first apply, but to sometimes need to apply
+    # multiple times.
+    apply_chance: true
+    # List of Jobs
+    jobs:
+      # Job Name
+      - name: "Teacher"
+        # Job ID, must be Unique
+        id: "teacher"
+        # Min. Salary
+        min: 0
+        # Max. Salary
+        max: 250
+        # Cooldown for Job (in seconds)
+        cooldown: 0
+      - name: "Programmer"
+        id: "programmer"
+        min: 0
+        max: 500
+        cooldown: 600
+      - name: "Baker"
+        id: "baker"
+        min: 0
+        max: 300
+        cooldown: 30
+      - name: "Bus Driver"
+        id: "busdriver"
+        min: 0
+        max: 200
+        cooldown: 50
+    daily:
+      random: false
+      # If random is false, how much to give
+      amount: 1500
+      # If random is true, in which range to give
+      max: 1500
+      min: 500
+    bet:
+      # Cooldown for Bet (in seconds)
+      cooldown: 60
+    shop:
+      enabled: true
+      # Format for Items
+      item_format: "`#<id>` <name> - 💵<price>\n - <description>"
+      items:
+        # Type of Item you want to sell
+        # Currently just ROLE
+        - type: "ROLE"
+          # Item Name
+          name: "Ultimate Role"
+          # Item Description
+          description: "With this purchase you will receive Ultimate Role"
+          # If type is Role, ID/Name of Role you want to give
+          role: ""
+          # Price for this item
+          price: 25000
+    # Minumum amount both user who's robbing and who's
+    # getting robbed need to have in wallet.
+    min_rob: 500
+  reaction_roles:
+    enabled: true
+    list:
+      # Unique ID for Reaction Role, used to create
+      - id: "first"
+        # Title for Embed
+        title: "Reaction Role"
+        # Description
+        description: "React to get your role."
+        # Embed Color
+        color: "#FFFF0"
+        # Can be TEXT, EMBED or MESSAGE
+        type: "EMBED"
+        # ID of existing message on which to create Reaction Roles
+        # Requires 'type: MESSAGE'
+        message: ""
+        roles:
+          - "😀": ""
+  auto_mod:
+    enabled: true
+    # List of modules enabled
+    # List of modules: CAPS_LOCK, BAD_WORDS, ANTI_LINK, ANTI_INVITE, ANTI_SPAM
+    modules: []
+    # List of bad words
+    bad_words: ["suck", "ass", "idiot"]
+    # Links Whitelist
+    links_wl: ["https://google.com"]
+    # Channels in which AutoModeration is disabled
+    channels:
+      caps: []
+      links:
+        - "1311239759775006751"
+      invites: []
+      bad_words: []
+      spam:
+        - "1311239759775006751"
+    # AutoMod Timeout duration (in seconds)
+    timeout: 600
+    # After how much time to delete punishment message (in seconds)
+    remove_after: 5
+    # How to Punish those who activate AutoMod
+    # Valid Punishments: TIMEOUT (With Message, Delete & Member Timeout), DELETE (Without Message), WARN (Without Deleting), WARN_DELETE (With Message)
+    punishments:
+      caps:
+        type: "WARN_DELETE"
+        # Duration of Timeout (in seconds) if Punishment is Timeout
+        timeout: "600"
+      links:
+        type: "WARN_DELETE"
+        # Duration of Timeout (in seconds) if Punishment is Timeout
+        timeout: "600"
+      invites:
+        type: "WARN_DELETE"
+        # Duration of Timeout (in seconds) if Punishment is Timeout
+        timeout: "600"
+      bad_words:
+        type: "WARN_DELETE"
+        # Duration of Timeout (in seconds) if Punishment is Timeout
+        timeout: "600"
+      spam:
+        type: "WARN_DELETE"
+        # Duration of Timeout (in seconds) if Punishment is Timeout
+        timeout: "600"
+  birthday:
+    announce_birthdays: false
+  tickets:
+    enabled: false
+    # Whether to mention Ticket Author when Ticket is open
+    mention_author: true
+    # Whether to mention Support Roles when Ticket is open
+    mention_support: true
+    # Whether to save Trasncripts
+    save_transcripts: true
+    # Limit of Tickets User can have open at once
+    limit: 1
+    # Format for Ticket Channel Name
+    # Available Placeholders: <username>, <ticket>
+    channel_name: "🎫〡ticket-<username>"
+    # After how much time to delete ticket when
+    # it gets closed (in seconds)
+    delete_after: 7
+    # Whether to DM Transcript to Ticket Author when Ticket is closed
+    dm_transcript: true
+    # Whether to Confirm Ticket Closure
+    confirm_close: true
+    # How much time does User have to confirm ticket close (in seconds)
+    confirm_time: 60
+  anti_tag:
+    enabled: false
+    # Whether to not block reply mentions
+    ignore_reply: false
+    # Names/IDs of Roles for Anti Mention, if message contains one of these roles, it will get deleted
+    roles: []
+    # IDs of Users for Anti Mention, if message contains one of these users, it will get deleted
+    users: []
+    # Message to send after message is deleted, leave empty to disable
+    warning_message: "> Hey <user>, please do not mention <mention>."
+  # Nickname to set to Member based on their highest role
+  role_nicknames:
+    enabled: false
+    list:
+      # Role Name/ID - Nickname (<username> placeholder supported)
+      "Role": "Nickname | <username>"
+
+# ____________________________
+#
+# CHANNELS CONFIGURATION
+# ____________________________
+
+channels:
+  # ID/Name of Channel in which to send new Suggestions
+  suggestions: ""
+  # ID/Name of Channel in which to send Embed for Suggestion Decision
+  sugg_decision: ""
+  # ID/Name of Channel in which to send Accepted/Denied Suggestions
+  sugg_logs: ""
+  # ID/Name of Channel to send Auto Announcements
+  announce: ""
+  # ID/Name of Channel to Log Invites
+  invites: ""
+  # ID/Name of Channel to Send Starboard Messages
+  starboard: ""
+  # Temporary Voice Channels
+  temporary:
+    # ID/Name of Category to which to move Channel once created
+    category: ""
+    # ID/Name of 'Join to Create' Channel
+    voice: ""
+    # Limit of Users by default
+    limit: 5
+  # Logging Channels
+  logging:
+    # ID/Name of Channel in which to Log Bot Stuff (Punishments and similar)
+    bot: ""
+    # ID/Name of Channel in which to Log Events
+    events: ""
+  # ID/Name of Channel in which to send Welcome Messages
+  welcome: ""
+  # ID/Name of Channel in which to send Leave Messages
+  leave: ""
+  # Ignore Channels for Specific Features
+  ignore:
+    levels: []
+  # ID/Name of Channel in which to send Birthday Messages
+  birthday: ""
+  # ID/Name of Channel in which to send Levelup Messages
+  level: ""
+  # ID/Name of Category in which to open Tickets
+  ticket_category: ""
+  # ID/Name of Channel in which to send Transcripts
+  transcripts: ""
+  # Channels for Games
+  games:
+    # ID/Name of Channel for Counting Game
+    counting: ""
+
+# ____________________________
+#
+# AUTO RESPONSES
+# ____________________________
+
+auto_response:
+  # Are Responses Enabled
+  enabled: false
+  # Cooldown for Auto Responses (in seconds) - per channel
+  # Bot won't answer to other Initiator Messages until cooldown expires
+  cooldown: 5
+  # Embed or Normal Message
+  # Values: EMBED, TEXT
+  type: "EMBED"
+  # List of Responses
+  list:
+    # Initiator Message - Response Message
+    "Test Message": "Test Response"
+    "Another Message": "Another Response"
+
+# ____________________________
+#
+# AUTO ANNOUNCEMENTS
+# ____________________________
+
+auto_announce:
+  # Are Announcements Enabled
+  enabled: false
+  # Embed or Normal Message
+  # Values: EMBED, TEXT
+  type: "EMBED"
+  # Interval for Announcements (in seconds)
+  interval: 60
+  # List of Announcements
+  list:
+    # Messages to Announce
+    - "First Message"
+    - "Second Message"
+
+# ____________________________
+#
+# ROLES CONFIGURATION
+# ____________________________
+
+roles:
+  # Join Roles
+  join:
+    enabled: false
+    # List of Roles to give to Member on Join
+    # Example:
+    #
+    # list:
+    #   - "1234"
+    #
+    # If you don't want any, just change to list: []
+    list: []
+  # Leveling Roles
+  leveling:
+    enabled: false
+    # Whether to stack roles (don't remove previous reward)
+    stack: false
+    # List of Roles to give to Member on LevelUP
+    # Example:
+    #
+    # list:
+    #   Level: "Role"
+    #
+    # If you don't want any, just change to list: []
+    list: []
+  # Roles which can bypass specific stuff
+  # Format is same as for above roles
+  bypass:
+    # Roles which can bypass Command Cooldown
+    cooldown: []
+    # Roles which can bypass Command Permissions
+    permission: []
+    # Roles which can bypass Anti Link AutoModeration
+    links: []
+    # Roles which can bypass Anti CapsLock AutoModeration
+    caps_lock: []
+    # Roles which can bypass Bad Words AutoModeration
+    bad_words: []
+    # Roles which can bypass Anti Spam AutoModeration
+    spam: []
+    # Roles which can bypass AntiInvites AutoModeration
+    invites: []
+    # Roles which can bypass Giveaway Requirements
+    giveaway: []
+    # Roles which can bypass Anti Tag
+    anti_tag: []
+  # Roles which will be blacklisted from
+  # accessing specific stuff
+  blacklist:
+    # Role which will be blacklisted from entering Giveaways
+    giveaway: []
+  # Invite Rewards Roles
+  invite_rewards:
+    enabled: false
+    # Whether to stack roles (don't remove previous reward)
+    stack: false
+    # List of Roles to give to Member on specific
+    # amount of Regular Invites
+    # Example:
+    #
+    # list:
+    #   InvitesNumber: "Role"
+    #
+    # If you don't want any, just change to list: []
+    list: []
+  # Roles Configuration for Dashboard Access
+  dashboard:
+    # Roles which will have access to Dashboard
+    # Everyone with 'Administrator' Permission have access to dashboard!
+    access: []
+    # Roles which will be able to edit Config from Dashboard
+    config: []
+    # Roles which will be able to enable/disable Commands from Dashboard
+    commands: []
+    # Roles which will be able to access Plugins section of Dashboard
+    plugins: []
+  # Roles which will be added to Ticket when someone opens it
+  support: []
+
+# ____________________________
+#
+# CUSTOM STATUS CONFIGURATION
+# ____________________________
+
+status:
+  # Can be Online, Idle, Invisible & DND
+  presence_status: "Online"
+  # Can be Playing, Listening, Watching and Competing
+  type: "Watching"
+  # Random Messages in Custom Status, changing every x minutes/hours
+  change_random: true
+  # Interval to Change Custom Status (in seconds)
+  interval: 180 # 3 minutes, don't go below that
+  # Message which is displayed in Custom Status if change_random = false
+  message: "Champa.lol"
+  # List of Custom Status's if change_random = true
+  # Valid Placeholders: <members>, <channels>, <prefix>
+  messages:
+    - "<members> total members"
+
+# ____________________________
+#
+# EMOJIS CONFIGURATION
+# ____________________________
+
+emojis:
+  # Emojis added to new Suggestions
+  yes_emoji: "👍"
+  no_emoji: "👎"
+  remove_vote: "✖"
+  # Next Button Emoji
+  next: "▶"
+  # Previous Button Emoji
+  previous: "◀"
+  backup:
+    load_all: "✅"
+    load_roles: "🎭"
+    load_channels: "📻"
+  giveaway:
+    # Confirm Start Giveaway Button Emoji
+    start: "🎉"
+    # Cancel Start Giveaway Button Emoji
+    cancel: "❌"
+    # Emoji which to React to Enter Giveaway
+    react: "🎊"
+  leaderboard:
+    # Next Page
+    next: "➡️"
+    previous: "⬅️"
+  # Rock, Paper, Scissors Emojis
+  rps:
+    rock: "✊"
+    paper: "🤚"
+    scissors: "✌"
+    yes: "✅"
+    no: "✖"
+  # Tickets Emojis
+  tickets:
+    # Open Ticket Button
+    open_ticket: "🎫"
+    # CLose Ticket Button
+    close_ticket: "🔒"
+    # Confirm Close Buttons
+    confirm_yes: "🔐"
+    confirm_no: "🔓"
+  # Embed Builder Buttons Emojis
+  embed_builder:
+    title: "📕"
+    url: "🔗"
+    color: "🧊"
+    image: "🖼"
+    thumbnail: "🖼"
+    description: "📚"
+    author_name: "👤"
+    author_img: "👤"
+    author_url: "👤"
+    footer_text: "🖊"
+    footer_img: "🖼"
+    timestamp: "⌚"
+    send: "📤"
+    cancel: "❌"
+    channel: "✈"
+    preview: "👀"
+
+# _____________________________________________________________
+#
+#                     END OF CONFIGURATION
+# _____________________________________________________________

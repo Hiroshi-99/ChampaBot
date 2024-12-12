@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+  <%- await include("partials/head") %>
+  <body>
+    <div>
+      <%- await include("partials/navbar") %>
+      <div class="bg-darkblue">
+        <div class="settings">
+          <% const member = guild.members.cache.get(user.id); %>
+          <% const configUsers = bot.config.server.dashboard.users.config || []; %>
+          <% const cmdUsers = bot.config.server.dashboard.users.commands || []; %>
+          <% if(bot.config.server.dashboard.modules.settings.config == true && (member.id == guild.ownerId || (bot.config.roles.dashboard.config.length > 0 && bot.utils.hasRole(bot, guild, member, bot.config.roles.dashboard.config)) || configUsers.includes(member.id))) { %>
+            <div class="configuration mb-5">
+              <div class="container px-0">
+                <h3 class="mt-5 text-light text-center text-md-start test"><%= bot.language.dashboard.titles.config %></h3>
+              </div>
+              <div class="container mt-4">
+                <div class="d-flex row statsBox py-3 px-2">
+                  <h4 class="text-light text-start mt-2 mb-3">General Configuration</h4>
+                  <div class="firstConfig d-flex row">
+                    <form onsubmit="changeConfig(event, 'general')" class="col-md-2 mb-3 mb-md-0">
+                      <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Prefix for commands when not using Slash ones"><i class="fa-solid fa-circle-info fa-xs"></i></span> Bot Prefix</label>
+                      <input name="prefix" value="<%= bot.config.general.prefix %>" id="prefix" type="text" maxlength="6" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                    </form>
+                    <form onsubmit="changeConfig(event, 'general')" class="col-md-4 mb-3">
+                      <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Name of the Bot"><i class="fa-solid fa-circle-info fa-xs"></i></span> Bot Name</label>
+                      <input name="name" value="<%= bot.config.general.name %>" id="name" type="text" maxlength="32" class="form-control configInput text-white rounded-2 text-light w-100" style="background-color: #162447; border-color: #16213E;" />
+                    </form>
+                  </div>
+                  <div class="roleOptions row" style="overflow-x: hidden;">
+                    <h4 class="text-light text-start mt-2 mb-3">Roles Configuration</h4>
+                    <div class="col-md-3 d-flex flex-column mb-3">
+                      <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="List of Roles to give to Member on Join"><i class="fa-solid fa-circle-info fa-xs"></i></span> Join Roles</label>
+                      <select class="select2-selectmenu select2-selectmenu--roles text-light d-block" id="join.list" style="width: 100%;" name="roles_join" data-placeholder="Select Roles" multiple="multiple">
+                        <option value=""></option>
+                        <% for(const role of guild.roles.cache) { %>
+                          <option <%= bot.config.roles.join.list.includes(role[0]) ? "selected" : "" %>  value="<%= role[0] %>"><%= role[1].name %> </option>
+                        <% } %>
+                      </select>
+                    </div>
+                    <% 
+                      const roleText = {
+                        cooldown: {
+                          name: "Command Cooldown",
+                          tooltip: "Roles which can bypass Command Cooldown",
+                        },
+                        permission: {
+                          name: "Command Permission",
+                          tooltip: "Roles which can bypass Command Permissions",
+                        },
+                        links: {
+                          name: "AntiLinks Bypass",
+                          tooltip: "Roles which can bypass AntiInvites AutoMod",
+                        },
+                        caps_lock: {
+                          name: "AntiCaps Bypass",
+                          tooltip: "Roles which can bypass AntiCaps AutoMod",
+                        },
+                        bad_words: {
+                          name: "Bad Words Bypass",
+                          tooltip: "Roles which can bypass Bad Words AutoMod",
+                        },
+                        spam: {
+                          name: "AntiSpam Bypass",
+                          tooltip: "Roles which can bypass AntiSpam AutoMod",
+                        },
+                        invites: {
+                          name: "AntiInvites Bypass",
+                          tooltip: "Roles which can bypass AntiInvites AutoMod",
+                        },
+                        giveaway: {
+                          name: "Giveaway Req.",
+                          tooltip: "Role which can bypass Giveaway Requirements",
+                        },
+                        anti_tag: {
+                          name: "Anti Tag",
+                          tooltip: "Role which can bypass Anti Tag",
+                        },
+                      }
+                    %> 
+                    <% for(const bypass of Object.keys(bot.config.roles.bypass)) { %>
+                      <div class="col-md-3 d-flex flex-column mb-3">
+                        <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="<%= roleText[bypass].tooltip %>"><i class="fa-solid fa-circle-info fa-xs"></i></span> <%= roleText[bypass].name %></label>
+                        <select class="select2-selectmenu select2-selectmenu--roles text-light d-block" id="bypass.<%= bypass %>" style="width: 100%;" name="bypass_perm" data-placeholder="Select Roles" multiple="multiple">
+                          <option value=""></option>
+                          <% for(const role of guild.roles.cache) { %>
+                            <option <%= bot.config.roles.bypass[bypass].includes(role[0]) ? "selected" : "" %>  value="<%= role[0] %>"><%= role[1].name %> </option>
+                          <% } %>
+                        </select>
+                      </div>
+                    <% } %>
+                  </div>
+                  <div class="channelOptions row" style="overflow-x: hidden;">
+                    <% const textChannels = guild.channels.cache.filter((c) => c.type == 0); %>
+                    <% const voiceChannels = guild.channels.cache.filter((c) => c.type == 2); %>
+                    <% const categoryChannels = guild.channels.cache.filter((c) => c.type == 4); %>
+                    <% const channelArr = Object.keys(bot.config.channels); %>
+                    <% 
+                      const channelTexts = {
+                        invites: {
+                          name: "Invites",
+                          tooltip: "Channel in which to log Invites"
+                        },
+                        starboard: {
+                          name: "Starboard",
+                          tooltip: "Channel in which to send Starboard Messages"
+                        },
+                        announce: {
+                          name: "Announce",
+                          tooltip: "Channel in which to send Auto Announcements"
+                        },
+                        suggestions: {
+                          name: "Suggestions",
+                          tooltip: "Channel in which to send new Suggestions"
+                        },
+                        sugg_decision: {
+                          name: "Suggestion Decision",
+                          tooltip: "Channel in which to send message for Suggestion Decision"
+                        },
+                        sugg_logs: {
+                          name: "Suggestion Logs",
+                          tooltip: "Channel in which to send Accepted/Denied Suggestions"
+                        },
+                        welcome: {
+                          name: "Welcome",
+                          tooltip: "Channel in which to send Welcome Messages"
+                        },
+                        leave: {
+                          name: "Leave",
+                          tooltip: "Channel in which to Leave Messages"
+                        },
+                        birthday: {
+                          name: "Birthday",
+                          tooltip: "Channel in which to send Birthday Messages"
+                        },
+                        level: {
+                          name: "Level",
+                          tooltip: "Channel in which to send Levelup Messages"
+                        },
+                        transcripts: {
+                          name: "Transcripts",
+                          tooltip: "Channel in which to send Transcripts"
+                        },
+                        transcripts: {
+                          name: "Transcripts",
+                          tooltip: "Channel in which to send Transcripts"
+                        },
+                      }
+                    %>
+                    <h4 class="text-light text-start mt-2 mb-3">Channel Configuration</h4>
+                    <div class="col-md-4 mb-3">
+                      <div class="container px-0 d-flex flex-column">
+                        <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Channel in which to Log Bot Stuff (Punishments and similar)"><i class="fa-solid fa-circle-info fa-xs"></i></span> Bot Logging </label>
+                        <select class="select2-selectmenu select2-selectmenu--chcfg text-light d-block" id="logging.bot" style="width: 100%;" name="logging_bot" data-placeholder="Select Channel">
+                          <option value=""></option>
+                          <option value="reset">Clear Channel</option>
+                          <% for(const ch of textChannels) { %>
+                            <option <%= bot.config.channels.logging.bot == ch[0] ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <div class="container px-0 d-flex flex-column">
+                        <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Channel in which to Log Events"><i class="fa-solid fa-circle-info fa-xs"></i></span> Events Logging </label>
+                        <select class="select2-selectmenu select2-selectmenu--chcfg text-light d-block" id="logging.events" style="width: 100%;" name="logging_events" data-placeholder="Select Channel">
+                          <option value=""></option>
+                          <option value="reset">Clear Channel</option>
+                          <% for(const ch of textChannels) { %>
+                            <option <%= bot.config.channels.logging.events == ch[0] ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <div class="container px-0 d-flex flex-column">
+                        <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Category to which to move Temporary Channel once created"><i class="fa-solid fa-circle-info fa-xs"></i></span> Temp Channel Category </label>
+                        <select class="select2-selectmenu select2-selectmenu--chcfg text-light d-block" id="temporary.category" style="width: 100%;" name="temporary_category" data-placeholder="Select Channel">
+                          <option value=""></option>
+                          <option value="reset">Clear Channel</option>
+                          <% for(const ch of categoryChannels) { %>
+                            <option <%= bot.config.channels.temporary.category == ch[0] ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <div class="container px-0 d-flex flex-column">
+                        <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Category in which to open Tickets"><i class="fa-solid fa-circle-info fa-xs"></i></span> Ticket Category </label>
+                        <select class="select2-selectmenu select2-selectmenu--chcfg text-light d-block" id="ticket_category" style="width: 100%;" name="ticket_category" data-placeholder="Select Channel">
+                          <option value=""></option>
+                          <option value="reset">Clear Channel</option>
+                          <% for(const ch of categoryChannels) { %>
+                            <option <%= bot.config.channels.ticket_category == ch[0] ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <div class="container px-0 d-flex flex-column">
+                        <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="'Join to Create' Channel"><i class="fa-solid fa-circle-info fa-xs"></i></span> Join to Create Channel </label>
+                        <select class="select2-selectmenu select2-selectmenu--chcfg text-light d-block" id="temporary.voice" style="width: 100%;" name="temporary_voice" data-placeholder="Select Channel">
+                          <option value=""></option>
+                          <option value="reset">Clear Channel</option>
+                          <% for(const ch of voiceChannels) { %>
+                            <option <%= bot.config.channels.temporary.voice == ch[0] ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <div class="container px-0 d-flex flex-column">
+                        <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Channel in which to not count XP"><i class="fa-solid fa-circle-info fa-xs"></i></span> Ignore Leveling </label>
+                        <select class="select2-selectmenu select2-selectmenu--chcfg text-light d-block" id="ignore.levels" style="width: 100%;" name="ignore_levels" data-placeholder="Select Channel" multiple="multiple">
+                          <option value=""></option>
+                          <option value="reset">Clear Channel</option>
+                          <% for(const ch of textChannels) { %>
+                            <option <%= bot.config.channels.ignore.levels.includes(ch[0])  ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <div class="container px-0 d-flex flex-column">
+                        <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Channel in which to not count XP"><i class="fa-solid fa-circle-info fa-xs"></i></span> Counting Game </label>
+                        <select class="select2-selectmenu select2-selectmenu--chcfg text-light d-block" id="games.counting" style="width: 100%;" name="counting" data-placeholder="Select Channel">
+                          <option value=""></option>
+                          <option value="reset">Clear Channel</option>
+                          <% for(const ch of textChannels) { %>
+                            <option <%= bot.config.channels.ignore.levels.includes(ch[0])  ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                    <% for(const channel of channelArr) { %>
+                      <% if(channel != "temporary" && channel != "logging" && channel != "ignore" && channel != "ticket_category" && channel != "games") { %>
+                        <div class="col-md-4 mb-3">
+                          <div class="container px-0 d-flex flex-column">
+                            <label class="text-light pb-1"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="<%= channelTexts[channel].tooltip  %>"><i class="fa-solid fa-circle-info fa-xs"></i></span> <%= channelTexts[channel].name  %> </label>
+                            <select class="select2-selectmenu select2-selectmenu--chcfg text-light d-block" id="<%= channel %>" style="width: 100%;" name="<%= channel %>" data-placeholder="Select Channel">
+                              <option value=""></option>
+                              <option value="reset">Clear Channel</option>
+                              <% for(const ch of textChannels) { %>
+                                <option <%= bot.config.channels[channel] == ch[0] ? "selected": "" %> class="bg-darkblue" value="<%= ch[0] %>"><%= ch[1].name %></option>
+                              <% } %>
+                            </select>
+                          </div>
+                        </div>
+                      <% } %> 
+                    <% } %>
+                  </div>
+                  <div class="togglable d-flex flex-column container">
+                    <h4 class="text-light text-start mt-2 mb-3">Togglables</h4>
+                    <div class="row ms-1">
+                      <div class="form-check form-switch col-md-4">
+                        <input onclick="changeConfig(event, 'general', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="remove_command" <%= bot.config.general.remove_command == true ? "checked" : "" %> >
+                        <label class="form-check-label text-light d-flex">Remove Command<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove Command Message after Sent"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                        <input onclick="changeConfig(event, 'plugins', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="tickets.dm_transcript" <%= bot.config.plugins.tickets.dm_transcript == true ? "checked" : "" %> >
+                        <label class="form-check-label text-light d-flex">DM Transcript<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to DM Transcript to Ticket Author after it gets closed"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                        <input onclick="changeConfig(event, 'general', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="tickets.confirm_close" <%= bot.config.plugins.tickets.confirm_close == true ? "checked" : "" %> >
+                        <label class="form-check-label text-light d-flex">Confirm Close<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to Confirm Ticket Closure"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                        <input onclick="changeConfig(event, 'plugins', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="tickets.mention_author" <%= bot.config.plugins.tickets.mention_author == true ? "checked" : "" %> >
+                        <label class="form-check-label text-light d-flex">Mention Author<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to mention Ticket Author when ticket is open"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                        <input onclick="changeConfig(event, 'plugins', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="tickets.mention_support" <%= bot.config.plugins.tickets.mention_support == true ? "checked" : "" %> >
+                        <label class="form-check-label text-light d-flex">Mention Support<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to mention Support when ticket is open"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                        <input onclick="changeConfig(event, 'general', '', true)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="dm_punishment" <%= bot.config.general.dm_punishment == true ? "checked" : "" %> >
+                        <label class="form-check-label text-light d-flex">DM Punishments<span class="ms-2" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Whether to DM Members when they get punished"><i class="fa-solid fa-circle-info fa-xs"></i></span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+          <% if(bot.config.server.dashboard.modules.settings.commands == true && (member.id == guild.ownerId || (bot.config.roles.dashboard.commands.length > 0 && bot.utils.hasRole(bot, guild, member, bot.config.roles.dashboard.commands)) || cmdUsers.includes(member.id))) { %>
+            <div class="commands mb-5">
+              <div class="container px-0">
+                <h3 class="mt-5 text-light text-center text-md-start"><%= bot.language.dashboard.titles.commands %></h3>
+              </div>
+              <div class="container mt-4">
+                <div class="d-flex row statsBox py-3 px-2">
+                  <div class="row px-2">
+                    <% for(const cmd of commands) { %>
+                      <div class="col-6 col-sm-4 col-md-4">
+                        <div class="form-check form-switch">
+                          <input onchange="toggleCommand(event)" class="form-check-input px-0" type="checkbox" style="cursor: pointer;" role="switch" id="<%= cmd %>" <%= bot.cmdConfig[cmd].enabled == true ? "checked" : "" %> >
+                          <label class="form-check-label text-light d-flex" for="<%= cmd %>-command"><%= cmd %> </label>
+                        </div>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+          <div class="accessManaging mb-5">
+            <div class="container px-0">
+              <h3 class="mt-5 text-light text-center text-md-start"><%= bot.language.dashboard.titles.access %></h3>
+            </div>
+            <div class="container mt-4">
+              <div class="d-flex row statsBox py-3 px-2">
+                <div class="d-flex row">
+                  <h4 class="text-light text-start mt-2 mb-3"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Users which will be able to access Dashboard without need of role"><i class="fa-solid fa-circle-info fa-xs"></i></span> Dashboard Access</h4>
+                  <div class="col-md-4 mb-3">
+                    <form method="post" action="/settings/users/access" className='form-floating mb-3'>
+                      <p class="text-light fs-5"><%= bot.language.dashboard.titles.add %></p>
+                      <input name="user" type="number" maxlength="18" placeholder="User ID to add/remove" class="form-control text-white rounded-2 text-light" style="background-color: #162447; border-color: #16213E;" />
+                      <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                    </form>
+                  </div>
+                  <div class="col-md-6 scrollbarSettings">
+                    <% const accessUsers = bot.config.server.dashboard.users.access || []; %> 
+                    <p class="text-light fs-5"><%= bot.language.dashboard.titles.current_users %><span class="fs-6" style="color: rgb(156 163 175);"> (excluding those with roles)</span></p>
+                    <div style="overflow-y: scroll; height: 10rem; background-color: rgba(22,33,62, 0.5);">
+                      <div class="py-1 px-2">
+                        <% if(accessUsers.length > 0) { %>
+                          <% for(const user of accessUsers) { %>
+                            <p class="text-light p-0 m-0"><%= bot.users.cache.get(user)?.username || "Unknown User" %> - <%= user %></p>
+                            <hr style="color: #404e60; margin-top: 0.2rem; margin-bottom: 0.2rem;">
+                          <% } %>
+                        <% } else { %>
+                          <div class="text-center align-items-center w-100">
+                            <span class="text-light fw-bold"><%= bot.language.dashboard.no_users %></span>
+                          </div>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% if(user.id == guild.ownerId) { %>
+                  <div class="d-flex row mt-3">
+                    <h4 class="text-light text-start mt-2 mb-3"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Users which will be able to access Config from Dashboard"><i class="fa-solid fa-circle-info fa-xs"></i></span> Config Access</h4>
+                    <div class="col-md-4 mb-3">
+                      <form method="post" action="/settings/users/config" className='form-floating mb-3'>
+                        <p class="text-light fs-5"><%= bot.language.dashboard.titles.add %></p>
+                        <input name="user" type="number" maxlength="18" placeholder="User ID to add/remove" class="form-control text-white rounded-2 text-light" style="background-color: #162447; border-color: #16213E;" />
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                      </form>
+                    </div>
+                    <div class="col-md-6 scrollbarSettings">
+                      <% const configAccess = bot.config.server.dashboard.users.config || []; %> 
+                      <p class="text-light fs-5"><%= bot.language.dashboard.titles.current_users %><span class="fs-6" style="color: rgb(156 163 175);"> (excluding those with roles)</span></p>
+                      <div style="overflow-y: scroll; height: 10rem; background-color: rgba(22,33,62, 0.5);">
+                        <div class="py-1 px-2">
+                          <% if(configAccess.length > 0) { %>
+                            <% for(const user of configAccess) { %>
+                              <p class="text-light p-0 m-0"><%= bot.users.cache.get(user)?.username || "Unknown User" %> - <%= user %></p>
+                              <hr style="color: #404e60; margin-top: 0.2rem; margin-bottom: 0.2rem;">
+                            <% } %>
+                          <% } else { %>
+                            <div class="text-center align-items-center w-100">
+                              <span class="text-light fw-bold"><%= bot.language.dashboard.no_users %></span>
+                            </div>
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex row mt-3">
+                    <h4 class="text-light text-start mt-2 mb-3"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Users which will be able to toggle Commands on/off from Dashboard"><i class="fa-solid fa-circle-info fa-xs"></i></span> Commands Access</h4>
+                    <div class="col-md-4 mb-3">
+                      <form method="post" action="/settings/users/commands" className='form-floating mb-3'>
+                        <p class="text-light fs-5"><%= bot.language.dashboard.titles.add %></p>
+                        <input name="user" type="number" maxlength="18" placeholder="User ID to add/remove" class="form-control text-white rounded-2 text-light" style="background-color: #162447; border-color: #16213E;" />
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                      </form>
+                    </div>
+                    <div class="col-md-6 scrollbarSettings">
+                      <% const cmdAccess = bot.config.server.dashboard.users.commands || []; %> 
+                      <p class="text-light fs-5"><%= bot.language.dashboard.titles.current_users %><span class="fs-6" style="color: rgb(156 163 175);"> (excluding those with roles)</span></p>
+                      <div style="overflow-y: scroll; height: 10rem; background-color: rgba(22,33,62, 0.5);">
+                        <div class="py-1 px-2">
+                          <% if(cmdAccess.length > 0) { %>
+                            <% for(const user of cmdAccess) { %>
+                              <p class="text-light p-0 m-0"><%= bot.users.cache.get(user)?.username || "Unknown User" %> - <%= user %></p>
+                              <hr style="color: #404e60; margin-top: 0.2rem; margin-bottom: 0.2rem;">
+                            <% } %>
+                          <% } else { %>
+                            <div class="text-center align-items-center w-100">
+                              <span class="text-light fw-bold"><%= bot.language.dashboard.no_users %></span>
+                            </div>
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex row mt-3">
+                    <h4 class="text-light text-start mt-2 mb-3"><span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Users which will be able to edit Plugins from Dashboard"><i class="fa-solid fa-circle-info fa-xs"></i></span> Plugins Access</h4>
+                    <div class="col-md-4 mb-3">
+                      <form method="post" action="/settings/users/plugins" className='form-floating mb-3'>
+                        <p class="text-light fs-5"><%= bot.language.dashboard.titles.add %></p>
+                        <input name="user" type="number" maxlength="18" placeholder="User ID to add/remove" class="form-control text-white rounded-2 text-light" style="background-color: #162447; border-color: #16213E;" />
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                      </form>
+                    </div>
+                    <div class="col-md-6 scrollbarSettings">
+                      <% const pluginsAccess = bot.config.server.dashboard.users.plugins || []; %> 
+                      <p class="text-light fs-5"><%= bot.language.dashboard.titles.current_users %><span class="fs-6" style="color: rgb(156 163 175);"> (excluding those with roles)</span></p>
+                      <div style="overflow-y: scroll; height: 10rem; background-color: rgba(22,33,62, 0.5);">
+                        <div class="py-1 px-2">
+                          <% if(pluginsAccess.length > 0) { %>
+                            <% for(const user of pluginsAccess) { %>
+                              <p class="text-light p-0 m-0"><%= bot.users.cache.get(user)?.username || "Unknown User" %> - <%= user %></p>
+                              <hr style="color: #404e60; margin-top: 0.2rem; margin-bottom: 0.2rem;">
+                            <% } %>
+                          <% } else { %>
+                            <div class="text-center align-items-center w-100">
+                              <span class="text-light fw-bold"><%= bot.language.dashboard.no_users %></span>
+                            </div>
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const sidebarBttn = document.querySelector(".settings");
+    sidebarBttn.classList.add("active");
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+     $(".configInput").blur(function() {
+      $(this).submit();
+    });
+
+    $(document).ready(function() {
+      $(".select2-selectmenu").select2({
+        width: "resolve"
+      });
+      $(".select2-selectmenu--roles").select2({
+        minimumResultsForSearch: -1
+      });
+    });
+
+    $(".select2-selectmenu--roles").on("select2:select", async(e) => {
+      const selOption = $(e.target).val()
+
+      changeConfig(e, "roles", selOption, false);
+    });
+
+    /* SELECT2 UNSELECT */
+
+    $(".select2-selectmenu--chcfg").on("select2:unselect", async(e) => {
+      const value = $(e.target).val()
+
+      changeConfig(e, "channels", value, false);
+    });
+
+    $(".select2-selectmenu--roles").on("select2:unselect", async(e) => {
+      const selOption = $(e.target).val()
+
+      changeConfig(e, "roles", selOption, false);
+    });
+
+    /* SELECT2 CONFIG */
+
+    $(".select2-selectmenu--chcfg").on("select2:select", async(e) => {
+      const value = $(e.target).val();
+
+      changeConfig(e, "channels", value, false);
+    });
+
+    /* SAVE CONFIG */
+
+    const changeConfig = (e, section, value, boolean = false) => {
+      if(e.target.value && e.target.value?.length > 0 && !value) 
+        value = e.target.value;
+      if(value == "reset") value = "";
+
+      $.ajax({
+        url: "/settings/config/" + e.target.id,
+        type: "PATCH",
+        dataType: "json",
+        data: {
+          configData: JSON.stringify({
+            section,
+            boolean,
+            "value": boolean == true ? null : value,
+          })
+        },
+        success: ((resp) => {
+          if(resp?.code == 200) {
+            if(boolean == true)
+              toastr.success(`Config option '${e.target.id}' have been ${e.target.checked == true ? "enabled" : "disabled"}.`);
+            else {
+              if(!value || value == "reset") {
+                toastr.success(`Config option '${e.target.id}' have been reseted.`);
+              } else if($(e.target).hasClass("select2-selectmenu")) {
+                const selectData = $(e.target).select2('data')[0];
+                toastr.success(`Config option '${e.target.id}' have been edited.`);
+              } else {
+                toastr.success(`Config option '${e.target.id}' have been changed to '${value}'.`);
+              }
+            }
+          }
+        }),
+        error: (() => {})
+      })
+    }
+
+    /* TOGGLE COMMAND */
+
+    const toggleCommand = (e) => {
+      $.ajax({
+        url: "/settings/commands/" + e.target.id,
+        type: "PATCH",
+        dataType: "json",
+        success: ((resp) => {
+          if(resp?.code == 200) {
+            toastr.success(`Command '${e.target.id}' have been ${e.target.checked == true ? "enabled" : "disabled"}.`);
+          }
+        }),
+        error: (() => {})
+      })
+    }
+  </script>
+</html>
