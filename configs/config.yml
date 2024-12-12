@@ -20,7 +20,7 @@ general:
   # Bot's Prefix
   prefix: "champa"
   # Bot Token obtained from Discord Developer Portal
-  token: "MTMxMzc0MTUzODE4NTk3MzgzMw.GD2fRL.zY-WxuWwPX8R8aPZ1Xj92YDcpM-23J5SZdPbjQ"
+  token: "YOUR-TOKEN"
   # ID of Guild in which Bot will be used
   # Used for Custom Status Stats and similar
   guild: "1311227940570398780"
@@ -155,7 +155,8 @@ server:
     # Configuration for User Dashboard Access
     users:
       # IDs of User's who will have access to Dashboard
-      access: ["1312970141230694555", "459154624230719489", "1058049067122434108"]
+      access:
+        ["1312970141230694555", "459154624230719489", "1058049067122434108"]
       # IDs of User's who will have access to Config Dashboard Section
       config: ["1312970141230694555"]
       # IDs of User's who will have access to Commands Dashboard Section
@@ -304,7 +305,18 @@ plugins:
     channel: ""
   fun:
     eightball:
-      answers: ["Yes", "Maybe", "Later", "Perhaps", "No", "Never", "Good", "Bad", "Nah"]
+      answers:
+        [
+          "Yes",
+          "Maybe",
+          "Later",
+          "Perhaps",
+          "No",
+          "Never",
+          "Good",
+          "Bad",
+          "Nah",
+        ]
   stats:
     # Count Messages
     messages: true
@@ -752,7 +764,6 @@ emojis:
     cancel: "❌"
     channel: "✈"
     preview: "👀"
-
 # _____________________________________________________________
 #
 #                     END OF CONFIGURATION
